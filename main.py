@@ -11,7 +11,7 @@ class code:
         ranges = {'r25': '@', 'r50': '&', 'r75': '%', 'r100': 'a', 'r125': 'c',
         'r150': 'f', 'r175': '!', 'r200': '|', 'r225': ',', 'r250': '.'}
         # Get image url
-        url = raw_input('url: ')
+        url = raw_input('url:')
         # Download image, return file_name, file_extension and file_location
         path = self.create_folder()
         down = self.download_image(url, path)
