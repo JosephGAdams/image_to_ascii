@@ -4,7 +4,6 @@ import os.path
 import Image
 import requests
 
-
 class code:
 
     def main(self):
@@ -14,16 +13,17 @@ class code:
         # Get image url
         url = raw_input('url: ')
         # Download image, return file_name, file_extension and file_location
-        down = self.download_image(url)
+        path = self.create_folder()
+        down = self.download_image(url, path)
         # Open image from location
-        raw_im = Image.open(down[-1])
+        raw_im = Image.open(os.path.join(down[-1], down[-2]))
         # Make the image smaller, if using a very small image, alter this
         if raw_im.size[0] > 400:
             new_x = raw_im.size[0] / 3
-            new_y = raw_im.size[1] / 6
+            new_y = raw_im.size[1] / 3
         else:
             new_x = raw_im.size[0]
-            new_y = raw_im.size[1] / 2
+            new_y = raw_im.size[1]
         im = raw_im.resize((new_x, new_y))
         pix = im.load()
         # image width
@@ -32,8 +32,17 @@ class code:
         last_y = im.size[1] - 1
         # Create text image and save to file
         self.draw_image(down[0], last_x, last_y, pix, ranges)
+        
+    def create_folder(self):
+        base_path = os.getcwd()
+        try:
+            path = os.mkdir(os.path.join(base_path, "images"), 0777)
+        except:
+            path = os.path.join(base_path, "images")
+        return path
+            
 
-    def download_image(self, url):
+    def download_image(self, url, path):
         # Check that image is in correct format
         formats = ['jpg', 'png', 'bmp']
         for each in formats:
@@ -47,10 +56,11 @@ class code:
                 # Define file_location
                 file_loc = "{}.{}".format(filename, file_format)
                 # Save file to disk
-                with open('images/' + filename + '.' + file_format, 'wb') as f:
+                print "{}/{}.{}".format(path, filename, file_format)
+                with open(path + "/" + filename + '.' + file_format, 'wb') as f:
                     for chunk in request.iter_content(1024):
                         f.write(chunk)
-                return (filename, file_format, file_loc)
+                return (filename, file_format, file_loc, path)
             else:
                 pass
 
